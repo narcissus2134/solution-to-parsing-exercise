@@ -1,4 +1,5 @@
 package sb.be.guildexercises.parsing
+
 import cats.data.StateT
 
 final case class Tree(value: String, children: List[Tree])
@@ -35,8 +36,6 @@ object Tree {
 
   private implicit class TreeOps (tree: Tree) {
 
-    //naive
-
     def appendChar(c: Char): Tree = {
       Tree(tree.value + c, tree.children)
     }
@@ -50,11 +49,10 @@ object Tree {
     case c if c.isLetterOrDigit => appendToTopTree(c)
     case '['                    => increaseStack
     case ']'                    => decreaseStack
-    // for some reason type inference fails here   vvvvvvvvvv
-    case _                      => StateT setF[Option, List[Tree]] None
+    case _                      => StateT setF None
   }
 
-  private def push[A](x: A): Stack[A, Unit] = StateT.modify(x :: _)
+  private def push[A](x: A): Stack[A, Unit] = StateT modify (x :: _)
 
   private def pop[A]: Stack[A, A] = StateT {
     case Nil     => None
@@ -62,8 +60,8 @@ object Tree {
   }
 
   private def guard[A]: Boolean => Stack[A, Unit] = {
-    case true  => StateT.pure(())
-    case false => StateT.setF(None)
+    case true  => StateT pure ()
+    case false => StateT setF None
   }
 
   private def appendToTopTree(c: Char): Stack[Tree, Unit] = for {
