@@ -10,3 +10,5 @@ lazy val root = (project in file("."))
     name := "parsing",
     libraryDependencies ++= Seq(scalaTest % Test, scalacheck % Test)
   )
+
+libraryDependencies += "org.typelevel" %% "cats-core" % "2.7.0"
